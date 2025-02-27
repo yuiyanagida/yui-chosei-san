@@ -1,0 +1,46 @@
+Firebase関連:
+  CORS対応:
+    概要: Cloud FunctionsでのCORS（Cross-Origin Resource Sharing）対応方法
+    発生した問題:
+      - Cloud Functionsへのアクセスがブロックされる
+      - "Access to fetch at ... has been blocked by CORS policy" エラーが発生
+      - プリフライトリクエスト（OPTIONS）が失敗
+    
+    解決方法:
+      1. corsパッケージの導入:
+        コマンド: npm install cors
+        場所: functions ディレクトリ
+      
+      2. Cloud Functionsでの実装:
+        - corsミドルウェアの使用
+        - リクエストハンドラをcorsでラップ
+        コード例: |
+          const cors = require('cors')({ origin: true });
+          exports.createEvent = onRequest((request, response) => {
+            return cors(request, response, async () => {
+              // 実際の処理をここに記述
+            });
+          });
+
+      3. フロントエンドの設定:
+        - Content Security Policyの更新
+        - connect-srcディレクティブに必要なドメインを追加
+        例: |
+          connect-src 'self' https://*.firebaseio.com 
+          wss://*.firebaseio.com https://*.googleapis.com 
+          https://*.cloudfunctions.net localhost:*
+
+    重要なポイント:
+      - corsパッケージは{ origin: true }で初期化する
+      - Cloud Functionsのレスポンスは必ずJSONでラップする
+      - エミュレータ環境でもCORS設定は必要
+      - Content Security Policyは慎重に設定する
+
+    デバッグのヒント:
+      - ブラウザの開発者ツールでネットワークタブを確認
+      - プリフライトリクエスト（OPTIONS）の応答を確認
+      - Cloud Functionsのログで詳細を確認
+
+    参考資料:
+      - Firebase公式ドキュメント: https://firebase.google.com/docs/functions/http-events
+      - CORSの仕様: https://developer.mozilla.org/ja/docs/Web/HTTP/CORS 

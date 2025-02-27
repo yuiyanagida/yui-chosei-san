@@ -1,0 +1,70 @@
+JavaScript日付処理:
+  ISO8601形式での統一管理:
+    概要: アプリケーション全体で日付をISO8601文字列形式で扱う方法
+    
+    発生した問題:
+      - Date オブジェクトの変換時にエラー
+      - タイムゾーンの違いによる日付のズレ
+      - Firestoreとの日付データの受け渡しで不整合
+    
+    解決方法:
+      1. データの保存:
+        - すべての日付をISO8601文字列形式で保存
+        - new Date().toISOString() を使用
+        コード例: |
+          const eventData = {
+            name: "イベント名",
+            dates: dates,  // すでにISO文字列
+            createdAt: new Date().toISOString()
+          };
+
+      2. Firestoreコンバーター:
+        - Date オブジェクトへの変換を避ける
+        - 文字列形式のまま保持
+        コード例: |
+          const eventConverter = {
+            toFirestore: (event) => ({
+              dates: event.dates,  // ISO文字列のまま
+              createdAt: event.createdAt
+            }),
+            fromFirestore: (snapshot) => ({
+              dates: data.dates,  // 変換せずそのまま
+              createdAt: data.createdAt
+            })
+          };
+
+      3. 表示時の変換:
+        - 表示直前にのみDate オブジェクトに変換
+        - toLocaleDateString()で適切な形式に
+        コード例: |
+          function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('ja-JP', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              weekday: 'short'
+            });
+          }
+
+    重要なポイント:
+      - アプリケーション内部では常にISO8601形式で扱う
+      - Date オブジェクトへの変換は表示時のみ
+      - タイムゾーンを意識した設計が必要
+      - バリデーションは文字列形式で実施
+
+    デバッグのヒント:
+      - console.logで日付形式を確認
+      - new Date(dateStr)が有効な値を返すか確認
+      - タイムゾーンによる影響を考慮
+      - Firestoreのデータをエミュレータで確認
+
+    ベストプラクティス:
+      - 日付操作は専用のユーティリティ関数に集約
+      - フロントエンド全体で統一した形式を使用
+      - 日付のバリデーションを適切に実装
+      - エラーハンドリングを考慮した設計
+
+    参考資料:
+      - MDN Date: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Date
+      - ISO 8601: https://www.iso.org/iso-8601-date-and-time-format.html
+      - Firestore データ型: https://firebase.google.com/docs/firestore/manage-data/data-types 

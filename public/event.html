@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="firebase-debug-mode" content="false">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://*.firebaseio.com https://*.googleapis.com; script-src 'self' 'unsafe-inline' https://*.firebaseio.com https://*.googleapis.com https://www.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com https://*.cloudfunctions.net localhost:*;">
+    <title>イベント詳細 - 飲み会スケジュール調整</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">イベント詳細</h1>
+        </header>
+        <main>
+            <div id="eventDetails">
+                <div class="event-header">
+                    <h2 id="eventName" class="event-title">読み込み中...</h2>
+                    <p class="event-meta">作成日: <span id="eventDate">-</span></p>
+                </div>
+                <div class="availability-table">
+                    <table id="availabilityGrid">
+                        <thead>
+                            <tr>
+                                <th>参加者</th>
+                                <!-- 日付はJavaScriptで動的に追加 -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 回答はJavaScriptで動的に追加 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="answer-form">
+                    <h3>出欠を回答する</h3>
+                    <form id="answerForm">
+                        <div class="form-group">
+                            <label for="userName">お名前</label>
+                            <input type="text" id="userName" class="input" required>
+                        </div>
+                        <div id="dateAnswers" class="date-answers">
+                            <!-- 日付ごとの回答フォームはJavaScriptで動的に追加 -->
+                        </div>
+                        <button type="submit" class="btn">回答を送信</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="/js/config.js"></script>
+    <script type="module" src="/js/event.js"></script>
+</body>
+</html> 

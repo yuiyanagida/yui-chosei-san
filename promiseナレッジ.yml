@@ -1,0 +1,86 @@
+JavaScript Promise処理:
+  グローバル状態管理とスコープ:
+    概要: 非同期処理におけるデータの共有と状態管理
+
+    発生した問題:
+      - Cannot read properties of undefined
+      - Uncaught (in promise) TypeError
+      - スコープ外の変数へのアクセスエラー
+      - イベントリスナー内でのデータ未定義
+
+    原因:
+      1. タイミングの問題:
+        - Promiseの解決前にデータにアクセス
+        - 非同期処理の完了を待たずに処理を実行
+      
+      2. スコープの問題:
+        - ローカルスコープ内の変数をグローバルで使用
+        - イベントリスナーでの変数アクセス制限
+
+    解決方法:
+      1. グローバル変数での状態管理:
+        コード例: |
+          // グローバルでデータを保持
+          let currentEvent = null;
+
+          async function loadEvent() {
+            currentEvent = await eventDB.get(eventId);
+          }
+
+      2. 非同期処理の待機:
+        コード例: |
+          document.addEventListener('DOMContentLoaded', async () => {
+            try {
+              await loadData();  // 非同期処理の完了を待つ
+              setupEventHandlers();  // データを使用する処理
+            } catch (error) {
+              handleError(error);
+            }
+          });
+
+      3. エラーハンドリング:
+        コード例: |
+          async function handleSubmit(e) {
+            if (!currentEvent) {  // データ存在チェック
+              alert('データが読み込まれていません');
+              return;
+            }
+            try {
+              await submitData();
+            } catch (error) {
+              console.error(error);
+            }
+          }
+
+    重要なポイント:
+      - 非同期処理の完了を必ず待つ
+      - データの存在チェックを実装
+      - エラーハンドリングを適切に行う
+      - グローバル変数の使用は最小限に
+
+    デバッグのヒント:
+      - console.logでデータの状態を確認
+      - 非同期処理の流れを追跡
+      - エラーメッセージを詳細に確認
+      - ブレークポイントでの変数確認
+
+    ベストプラクティス:
+      1. 状態管理:
+        - できるだけ状態を集中管理
+        - 必要最小限のグローバル変数
+        - 状態変更を追跡可能に
+
+      2. エラーハンドリング:
+        - try-catch での適切な例外処理
+        - ユーザーへの適切なフィードバック
+        - エラーログの記録
+
+      3. 非同期処理:
+        - async/await の活用
+        - Promise チェーンの適切な管理
+        - ローディング状態の表示
+
+    参考資料:
+      - MDN Promise: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise
+      - async/await: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/async_function
+      - JavaScript スコープ: https://developer.mozilla.org/ja/docs/Glossary/Scope 
